@@ -1,1 +1,2 @@
-this is datastruct README
+# dataStruct
+This is the first commit to dataStruct
