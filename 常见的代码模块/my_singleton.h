@@ -1,3 +1,5 @@
+//单例模型
+
 #pragma once
 #include <iostream>
 
