@@ -38,4 +38,4 @@ public:
 
 private:
     char * data_;    
-}
+};

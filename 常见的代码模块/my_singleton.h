@@ -4,7 +4,7 @@
 #include <iostream>
 
 template<typename T>
-
+using namespace std;
 class Singleton {
 public:
     static T & get_instance() {
@@ -20,4 +20,4 @@ protected:
     Singleton() {
         std::cout << "constructor called." << endl;
     }
-}
+};
