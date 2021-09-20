@@ -354,7 +354,7 @@ public:
 </details>
 
 <details>
-<summary>数组中的逆序对</summary>
+<summary>【hard】数组中的逆序对</summary>
 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出。 即输出P%1000000007。
 
 + 示例 1:
@@ -412,17 +412,19 @@ public:
         long count = 0; // 计数，逆序对的个数，注意类型
         
         while(i >= begin && j >= mid + 1){
-            if(data[i] > data[j]){
-                copy[indexcopy--] = data[i--];
-                count += j - mid;
+            if(data[i] > data[j]){//进行合并的时候需要计算一下逆序的结果
+                copy[indexcopy--] = data[i--];//在进行右边的数据合并的时候要记得把逆序数加和
+                count += j - mid;//利用下标进行累加
             }
             else{
                 copy[indexcopy--] = data[j--];
             }
         }
+        //一旦出现前面的数组比后面的数组长，则把剩余的结果拷贝过去
         for(;i >= begin; --i){
             copy[indexcopy--] = data[i];
         }
+        //这里是后面的数组比前面的数组长
         for(;j >= mid + 1; --j){
             copy[indexcopy--] = data[j];
         }
@@ -437,17 +439,40 @@ public:
 <summary>构建乘积数组</summary>
 给定一个数组A[0,1,...,n-1],请构建一个数组B[0,1,...,n-1],其中B中的元素B[i]=A[0]*A[1]*...*A[i-1]*A[i+1]*...*A[n-1]。不能使用除法。
 
+**思路**
+本题可以绘制相应的二纬表格进行推理,构造出来两个数组，然后分别相乘即可。
+
 ```
+class Solution {
+public:
+    vector<int> constructArr(vector<int>& a) {
+        int len = a.size();
+        if(len == 0) {
+            return {};
+        }
+        vector<int> arr1(a.begin(),a.end()),arr2(a.begin(),a.end()),res;
+        arr1[0] = 1;
+        arr2[len - 1] = 1;
+        for(int i = 1;i < len ;++i) {
+            arr1[i] = arr1[i-1] * a[i-1];
+            arr2[len - 1 - i] = arr2[len - i] * a[len - i];
+        }
+
+        for(int i = 0;i < len;++i) {
+            res.push_back(arr1[i] * arr2[i]);
+        }
+        return res;
+    }
+};
 
 ```
 </details>
 
 <details>
-<summary>数字在排序数组中出现的次数</summary>
+<summary>数组中数字出现的次数</summary>
+
 一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是O(n)，空间复杂度是O(1)。
-
  
-
 示例 1：
 
 输入：nums = [4,1,4,6]
@@ -480,7 +505,6 @@ i=1。但是为了方便，这里的代码选取的是「不为 00 的最低位�
 根据这一位对所有的数字进行分组。
 
 在每个组内进行异或操作，得到两个数字。
-
 
 ```
 class Solution {
@@ -518,12 +542,176 @@ public:
     输出：1
 
 ```
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        unordered_map<int,int> mp;
+        for(auto& num : nums) {
+            mp[num]++;
+        }
+        for(auto& [k,v]: mp) {
+            if(v == 1) {
+                return k;
+            } 
+        }
+        return -1;
+    }
+};
 
+```
+</details>
+<details>
+
+<summary>排序数组中只出现一次的数字</summary>
+
+给定一个只包含整数的有序数组 nums ，每个元素都会出现两次，唯有一个数只会出现一次，请找出这个唯一的数字。
+
++ 示例 1:
+
+    输入: nums = [1,1,2,3,3,4,4,8,8]
+    输出: 2
+
++ 示例 2:
+
+输入: nums =  [3,3,7,7,10,11,11]
+输出: 10
+
+提示:
+
+1 <= nums.length <= 105
+0 <= nums[i] <= 105
+
+```
+O(n)的解法,利用亦或
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        int ret = 0;
+        for(auto & num : nums) {
+            ret ^= num;
+        }
+        return ret;
+    }
+};
+```
+![tupian](https://pic.leetcode-cn.com/1630467212-hQBvAE-3c432ff0c7741e9f215c187bdd326da.jpg)
+要求O(logn)时间复杂度，就用二分查找，不过这里的二分要按照两个数字作为一对，因为由于单个数字的介入，导致了数据出现了一对中有不一致的情况，如果没有单个数字，那么每一对数据都是完全一样的，也即是说我们只要找到了不一致的第一对数组，就可以得到结果。
+```
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        int len = nums.size();
+        int left = 0, right = len / 2 -1 ;//这里是以一对作为一组元素
+        while(left <= right) {//利用闭区间来做
+            int mid = left + (right - left) / 2;
+            int i = 2 * mid;//一对数据的左边
+            if(nums[i] != nums[i + 1]) {
+                if(i == 0 || nums[i-1] == nums[i-2]) {//找到了第一个不同的位置
+                    return nums[i];
+                }
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return nums.back();
+    }
+};
 ```
 </details>
 
 <details>
+<summary>数组中重复的数字</summary>
+找出数组中重复的数字。
 
+
+在一个长度为 n 的数组 nums 里的所有数字都在 0～n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。
+
+示例 1：
+
+输入：
+[2, 3, 1, 0, 2, 5, 3]
+输出：2 或 3 
+
+```
+class Solution {
+public:
+    int countRange(vector<int> nums, int left,int right) {
+        int len = nums.size();
+        if(len== 0) {
+            return 0;
+        }
+        int count = 0;
+        for(int i =0;i < len;++i) {
+            if(nums[i] >= left && nums[i] <= right) {
+                ++count;
+            }
+        }
+        return count;
+    }
+    int findRepeatNumber(vector<int>& nums) {
+        //题解1，要求时间最佳，空间次要，数组位置不可移动，则用hashmap, 时间复杂度o(n),空间复杂度o(n)
+        /*
+        unordered_map<int,int> mp;
+        for(auto& num:nums) {
+            if(mp.count(num)) {
+                return num;
+            } else {
+                mp[num]++;
+            }
+        }
+        return -1;
+        */
+        //解法2，要求空间最佳，时间不能太差，数组位置可移动，先用排序，再判断相邻的元素是否想相等
+        //时间复杂度o(nlogn),空间复杂度o(1)
+        /*
+        sort(nums.begin(),nums.end());
+        for(int i = 0;i < nums.size()-1; ++i) {
+            if(nums[i] == nums[i+1] ) {
+                return nums[i];
+            }
+        }
+        return -1;*/
+        //解法3.空间复杂度o(1),时间复杂度o(n),数组可以移动，不用额外分配内存
+        //i表示索引下标就是应该放置的位置， nums[i]表示数组索引下的元素，nums[nums[i]]表示数组nums[i]应该放置的位置
+        //nums[i]是自家的萝卜，nums[nums[i]]是别人家的萝卜,i是原本自家的萝卜应该有的样子
+        /*
+        for(int i = 0;i < nums.size();++i) {
+            while(nums[i] != i) {
+                if(nums[i] == nums[nums[i]]) {
+                    return nums[i];
+                }
+                swap(nums[i],nums[nums[i]]);
+            }
+        }
+        return -1;
+        */
+        //解法4.如果要求空间复杂度o(1)，空间复杂度O(nlogn),不能移动数组,用二分法
+        int left = 1,right = nums.size() - 1;
+        while(left <= right) {
+            int mid = ((right - left) >> 1) + left;
+            int count = countRange(nums,left,mid);
+            if(left == right) {
+                if(count > 1) {
+                    return left;
+                } else {
+                    break;
+                }
+            }
+            if(count > (mid - left + 1)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return -1;
+         
+    }
+};
+```
+</details>
+
+<details>
 <summary> 顺时针打印矩阵</summary>
 
 **描述**
@@ -549,8 +737,11 @@ class Solution {
 public:
     vector printMatrix(vector > matrix) {
         int rows = matrix.size();
+        if(rows == 0) {
+            return {};
+        }
         int cols = matrix[0].size();
-        vector res;
+        vector<int> res;
         if(rows == 0 || cols == 0) {
             return res;
         }
@@ -583,4 +774,79 @@ public:
 };
      
 ```  
+</details>
+
+<details>
+<summary>【hard】字符串的排列</summary>
+输入一个字符串，打印出该字符串中字符的所有排列。
+
+你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。
+
++ 示例:
+
+    输入：s = "abc"
+    输出：["abc","acb","bac","bca","cab","cba"]
+
+```
+class Solution {
+public:
+    vector<string> rec;
+    vector<int> vis;
+
+    void backtrack(const string& s, int i, int n, string& perm) {
+        if (i == n) {
+            rec.push_back(perm);
+            return;
+        }
+        for (int j = 0; j < n; j++) {
+            if (vis[j] || (j > 0 && !vis[j - 1] && s[j - 1] == s[j])) {
+                continue;
+            }
+            vis[j] = true;
+            perm.push_back(s[j]);
+            backtrack(s, i + 1, n, perm);
+            perm.pop_back();
+            vis[j] = false;
+        }
+    }
+
+    vector<string> permutation(string s) {
+        int n = s.size();
+        vis.resize(n);
+        sort(s.begin(), s.end());
+        string perm;
+        backtrack(s, 0, n, perm);
+        return rec;
+    }
+};
+```
+</details>
+
+<details>
+<summary>左旋转字符串</summary>
+
+字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
+
++ 示例 1：
+
+    输入: s = "abcdefg", k = 2
+    输出: "cdefgab"
+
++ 示例 2：
+
+    输入: s = "lrloseumgh", k = 6
+    输出: "umghlrlose"
+
+```
+class Solution {
+public:
+    string reverseLeftWords(string s, int n) {
+        reverse(s.begin(),s.begin() + n);
+        reverse(s.begin() + n,s.end());
+        reverse(s.begin(),s.end());
+        return s;
+    }
+};
+```
+
 </details>
