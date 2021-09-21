@@ -377,6 +377,8 @@ public:
 
 ![分治法](https://github.com/facss/lzy2lcyDocs/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/imgs/basis_35_1.png)
 
+![basis_35_1.png](https://i.loli.net/2021/09/21/lmMUKTg9ecYdzf3.png)
+
 先把数组分解成两个长度为2的子数组，再把这两个子数组分解成两个长度为1的子数组。接下来一边合并相邻的子数组，一边统计逆序对的数目。在第一对长度为1的子数组{7}、{5}中7>5，因此（7,5）组成一个逆序对。同样在第二对长度为1的子数组{6}，{4}中也有逆序对（6,4），由于已经统计了这两对子数组内部的逆序对，因此需要把这两对子数组进行排序，避免在之后的统计过程中重复统计。
 
 ```
@@ -595,6 +597,7 @@ public:
 };
 ```
 ![tupian](https://pic.leetcode-cn.com/1630467212-hQBvAE-3c432ff0c7741e9f215c187bdd326da.jpg)
+
 要求O(logn)时间复杂度，就用二分查找，不过这里的二分要按照两个数字作为一对，因为由于单个数字的介入，导致了数据出现了一对中有不一致的情况，如果没有单个数字，那么每一对数据都是完全一样的，也即是说我们只要找到了不一致的第一对数组，就可以得到结果。
 ```
 class Solution {
@@ -1969,4 +1972,74 @@ public:
      };
      
 ```
+</details>
+
+## chap 4 二叉树
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
+</details>
+
+<details>
+<summary></summary>
 </details>
