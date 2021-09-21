@@ -787,6 +787,8 @@ public:
     输入：s = "abc"
     输出：["abc","acb","bac","bca","cab","cba"]
 
+**需要用到回溯法**
+
 ```
 class Solution {
 public:
@@ -849,4 +851,1122 @@ public:
 };
 ```
 
+</details>
+
+<details>
+<summary>第一个只出现一次的字符</summary>
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+
+示例 1:
+
+输入：s = "abaccdeff"
+输出：'b'
+示例 2:
+
+输入：s = "" 
+输出：' '
+
+```
+class Solution {
+public:
+    char firstUniqChar(string s) {
+        unordered_map<char,int> mp;
+        for(auto & c : s) {
+            mp[c]++;
+        }
+        for(auto & c : s) {
+            if(mp[c] == 1) {
+                return c;
+            }
+        }
+        return ' ';
+    }
+};
+```
+</details>
+
+<details>
+<summary>翻转单词顺序</summary>
+输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student. "，则输出"student. a am I"。
+
++ 示例 1：
+
+    输入: "the sky is blue"
+    输出: "blue is sky the"
++ 示例 2：
+
+    输入: "  hello world!  "
+    输出: "world! hello"
+    解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
++ 示例 3：
+
+    输入: "a good   example"
+    输出: "example good a"
+    解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+
+```
+class Solution {
+public:
+    string reverseWords(string s) {
+        stack<string> st;
+        int len = s.size();
+        string tmp_s;
+        for(int i = 0;i <= len;++i) {   
+            if(s[i] != ' ' && s[i] != '\0') {
+                tmp_s += s[i];
+            } else {
+                st.push(tmp_s);
+                tmp_s="";
+            }
+        }
+        string res;
+        while(!st.empty()) {
+            string ss = st.top();
+            if (ss=="") {
+                st.pop();
+                continue;
+            }
+            res += ss + ' ';
+            st.pop();
+        }
+        res.pop_back();
+        return res;
+    }
+};
+```
+</details>
+
+<details>
+<summary>字符串转换成整数</summary>
+写一个函数 StrToInt，实现把字符串转换成整数这个功能。不能使用 atoi 或者其他类似的库函数。 
+
+首先，该函数会根据需要丢弃无用的开头空格字符，直到寻找到第一个非空格的字符为止。
+
+当我们寻找到的第一个非空字符为正或者负号时，则将该符号与之后面尽可能多的连续数字组合起来，作为该整数的正负号；假如第一个非空字符是数字，则直接将其与之后连续的数字字符组合起来，形成整数。
+
+该字符串除了有效的整数部分之后也可能会存在多余的字符，这些字符可以被忽略，它们对于函数不应该造成影响。
+
+注意：假如该字符串中的第一个非空格字符不是一个有效整数字符、字符串为空或字符串仅包含空白字符时，则你的函数不需要进行转换。
+
+在任何情况下，若函数不能进行有效的转换时，请返回 0。
+
+说明：
+
+假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 [−231,  231 − 1]。如果数值超过这个范围，请返回  INT_MAX (231 − 1) 或 INT_MIN (−231) 。
+
++ 示例 1:
+
+    输入: "42"
+    输出: 42
++ 示例 2:
+
+    输入: "   -42"
+    输出: -42
+    解释: 第一个非空白字符为 '-', 它是一个负号。
+         我们尽可能将负号与后面所有连续出现的数字组合起来，最后得到 -42 。
++ 示例 3:
+
+    输入: "4193 with words"
+    输出: 4193
+    解释: 转换截止于数字 '3' ，因为它的下一个字符不为数字。
++ 示例 4:
+
+    输入: "words and 987"
+    输出: 0
+    解释: 第一个非空字符是 'w', 但它不是数字或正、负号。
+        因此无法执行有效的转换。
++ 示例 5:
+
+    输入: "-91283472332"
+    输出: -2147483648
+    解释: 数字 "-91283472332" 超过 32 位有符号整数范围。 
+         因此返回 INT_MIN (−231) 。
+
+```
+class Solution {
+public:
+    int strToInt(string str) {
+        if(str.empty()) return 0;
+        if(str[0] >= 'a' && str[0] <= 'z') {
+            return 0;
+        }
+        int i = 0;//索引下标
+        long res = 0;
+        //空格
+        while(str[i] == ' ') {
+            ++i;
+        }
+        int sign = 1;
+        //负号
+        if(str[i] == '-') {
+            sign = -1;
+            ++i;
+        } else if (str[i] == '+') {//正符号
+            ++i;
+        }
+        //正式循环
+        while(i < str.size()) {
+            if(str[i] >= '0' && str[i] <= '9') {
+                res = res * 10 + sign * (str[i] - '0');
+                //超出范围就停止循环,防止溢出
+                if(res > INT_MAX) {
+                    return INT_MAX;
+                } else if (res < INT_MIN) {
+                    return INT_MIN;
+                }
+            } else {
+                return res;//只要遇到不是数字的就停止循环
+            }
+            i++;
+        }
+        return res;
+    }
+};
+```
+
+</details>
+
+<details>
+<summary>[hard]正则表达式匹配</summary>
+
+请实现一个函数用来匹配包含'. '和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次（含0次）。在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串"aaa"与模式"a.a"和"ab*ac*a"匹配，但与"aa.a"和"ab*a"均不匹配。
+
++ 示例 1:
+
+    输入:
+    s = "aa"
+    p = "a"
+    输出: false
+    解释: "a" 无法匹配 "aa" 整个字符串。
++ 示例 2:
+
+    输入:
+    s = "aa"
+    p = "a*"
+    输出: true
+    解释: 因为 '*' 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 'a'。因此，字符串 "aa" 可被视为 'a' 重复了一次。
++ 示例 3:
+
+    输入:
+    s = "ab"
+    p = ".*"
+    输出: true
+    解释: ".*" 表示可匹配零个或多个（'*'）任意字符（'.'）。
++ 示例 4:
+
+    输入:
+    s = "aab"
+    p = "c*a*b"
+    输出: true
+    解释: 因为 '*' 表示零个或多个，这里 'c' 为 0 个, 'a' 被重复一次。因此可以匹配字符串 "aab"。
++ 示例 5:
+
+    输入:
+    s = "mississippi"
+    p = "mis*is*p*."
+    输出: false
+    s 可能为空，且只包含从 a-z 的小写字母。
+    p 可能为空，且只包含从 a-z 的小写字母以及字符 . 和 *，无连续的 '*'。
+
+```
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = s.size();
+        int n = p.size();
+
+        auto matches = [&](int i, int j) {
+            if (i == 0) {
+                return false;
+            }
+            if (p[j - 1] == '.') {
+                return true;
+            }
+            return s[i - 1] == p[j - 1];
+        };
+
+        vector<vector<int>> f(m + 1, vector<int>(n + 1));
+        f[0][0] = true;
+        for (int i = 0; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (p[j - 1] == '*') {
+                    f[i][j] |= f[i][j - 2];
+                    if (matches(i, j - 1)) {
+                        f[i][j] |= f[i - 1][j];
+                    }
+                }
+                else {
+                    if (matches(i, j)) {
+                        f[i][j] |= f[i - 1][j - 1];
+                    }
+                }
+            }
+        }
+        return f[m][n];
+    }
+};
+
+```
+</details>
+
+<details>
+<summary>表示数值的字符串</summary>
+
+请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。
+
+数值（按顺序）可以分成以下几个部分：
+
+若干空格
+一个 小数 或者 整数
+（可选）一个 'e' 或 'E' ，后面跟着一个 整数
+若干空格
+小数（按顺序）可以分成以下几个部分：
+
+（可选）一个符号字符（'+' 或 '-'）
+下述格式之一：
+至少一位数字，后面跟着一个点 '.'
+至少一位数字，后面跟着一个点 '.' ，后面再跟着至少一位数字
+一个点 '.' ，后面跟着至少一位数字
+整数（按顺序）可以分成以下几个部分：
+
+（可选）一个符号字符（'+' 或 '-'）
+至少一位数字
+部分数值列举如下：
+
+["+100", "5e2", "-123", "3.1416", "-1E-16", "0123"]
+部分非数值列举如下：
+
+["12e", "1a3.14", "1.2.3", "+-5", "12e+5.4"]
+ 
+
++ 示例 1：
+
+    输入：s = "0"
+    输出：true
++ 示例 2：
+
+    输入：s = "e"
+    输出：false
++ 示例 3：
+
+    输入：s = "."
+    输出：false
++ 示例 4：
+
+    输入：s = "    .1  "
+    输出：true
+ 
+提示：
+
+1 <= s.length <= 20
+s 仅含英文字母（大写和小写），数字（0-9），加号 '+' ，减号 '-' ，空格 ' ' 或者点 '.' 。
+
+**思路**
+确定有限状态自动机
+预备知识
+
+确定有限状态自动机（以下简称「自动机」）是一类计算模型。它包含一系列状态，这些状态中：
+
+有一个特殊的状态，被称作「初始状态」。
+还有一系列状态被称为「接受状态」，它们组成了一个特殊的集合。其中，一个状态可能既是「初始状态」，也是「接受状态」。
+起初，这个自动机处于「初始状态」。随后，它顺序地读取字符串中的每一个字符，并根据当前状态和读入的字符，按照某个事先约定好的「转移规则」，从当前状态转移到下一个状态；当状态转移完成后，它就读取下一个字符。当字符串全部读取完毕后，如果自动机处于某个「接受状态」，则判定该字符串「被接受」；否则，判定该字符串「被拒绝」。
+
+注意：如果输入的过程中某一步转移失败了，即不存在对应的「转移规则」，此时计算将提前中止。在这种情况下我们也判定该字符串「被拒绝」。
+
+一个自动机，总能够回答某种形式的「对于给定的输入字符串 S，判断其是否满足条件 P」的问题。在本题中，条件 P 即为「构成合法的表示数值的字符串」。
+
+自动机驱动的编程，可以被看做一种暴力枚举方法的延伸：它穷尽了在任何一种情况下，对应任何的输入，需要做的事情。
+
+自动机在计算机科学领域有着广泛的应用。在算法领域，它与大名鼎鼎的字符串查找算法「KMP」算法有着密切的关联；在工程领域，它是实现「正则表达式」的基础。
+
+问题描述：
+在 C++ 文档 中，描述了一个合法的数值字符串应当具有的格式。具体而言，它包含以下部分：
+
+符号位，即 ++、-− 两种符号
+整数部分，即由若干字符 0-90−9 组成的字符串
+小数点
+小数部分，其构成与整数部分相同
+指数部分，其中包含开头的字符 \text{e}e（大写小写均可）、可选的符号位，和整数部分
+相比于 C++ 文档而言，本题还有一点额外的不同，即允许字符串首末两端有一些额外的空格。
+
+在上面描述的五个部分中，每个部分都不是必需的，但也受一些额外规则的制约，如：
+
+如果符号位存在，其后面必须跟着数字或小数点。
+小数点的前后两侧，至少有一侧是数字。
+
+根据上面的描述，现在可以定义自动机的「状态集合」了。那么怎么挖掘出所有可能的状态呢？一个常用的技巧是，用「当前处理到字符串的哪个部分」当作状态的表述。根据这一技巧，不难挖掘出所有状态：
+
+起始的空格
+符号位
+整数部分
+左侧有整数的小数点
+左侧无整数的小数点（根据前面的第二条额外规则，需要对左侧有无整数的两种小数点做区分）
+小数部分
+字符 \text{e}e
+指数部分的符号位
+指数部分的整数部分
+末尾的空格
+下一步是找出「初始状态」和「接受状态」的集合。根据题意，「初始状态」应当为状态 1，而「接受状态」的集合则为状态 3、状态 4、状态 6、状态 9 以及状态 10。换言之，字符串的末尾要么是空格，要么是数字，要么是小数点，但前提是小数点的前面有数字。
+
+最后，需要定义「转移规则」。结合数值字符串应当具备的格式，将自动机转移的过程以图解的方式表示出来：
+
+
+```
+class Solution {
+public:
+    enum State {
+        STATE_INITIAL,
+        STATE_INT_SIGN,
+        STATE_INTEGER,
+        STATE_POINT,
+        STATE_POINT_WITHOUT_INT,
+        STATE_FRACTION,
+        STATE_EXP,
+        STATE_EXP_SIGN,
+        STATE_EXP_NUMBER,
+        STATE_END
+    };
+
+    enum CharType {
+        CHAR_NUMBER,
+        CHAR_EXP,
+        CHAR_POINT,
+        CHAR_SIGN,
+        CHAR_SPACE,
+        CHAR_ILLEGAL
+    };
+
+    CharType toCharType(char ch) {
+        if (ch >= '0' && ch <= '9') {
+            return CHAR_NUMBER;
+        } else if (ch == 'e' || ch == 'E') {
+            return CHAR_EXP;
+        } else if (ch == '.') {
+            return CHAR_POINT;
+        } else if (ch == '+' || ch == '-') {
+            return CHAR_SIGN;
+        } else if (ch == ' ') {
+            return CHAR_SPACE;
+        } else {
+            return CHAR_ILLEGAL;
+        }
+    }
+
+    bool isNumber(string s) {
+        unordered_map<State, unordered_map<CharType, State>> transfer{
+            {
+                STATE_INITIAL, {
+                    {CHAR_SPACE, STATE_INITIAL},
+                    {CHAR_NUMBER, STATE_INTEGER},
+                    {CHAR_POINT, STATE_POINT_WITHOUT_INT},
+                    {CHAR_SIGN, STATE_INT_SIGN}
+                }
+            }, {
+                STATE_INT_SIGN, {
+                    {CHAR_NUMBER, STATE_INTEGER},
+                    {CHAR_POINT, STATE_POINT_WITHOUT_INT}
+                }
+            }, {
+                STATE_INTEGER, {
+                    {CHAR_NUMBER, STATE_INTEGER},
+                    {CHAR_EXP, STATE_EXP},
+                    {CHAR_POINT, STATE_POINT},
+                    {CHAR_SPACE, STATE_END}
+                }
+            }, {
+                STATE_POINT, {
+                    {CHAR_NUMBER, STATE_FRACTION},
+                    {CHAR_EXP, STATE_EXP},
+                    {CHAR_SPACE, STATE_END}
+                }
+            }, {
+                STATE_POINT_WITHOUT_INT, {
+                    {CHAR_NUMBER, STATE_FRACTION}
+                }
+            }, {
+                STATE_FRACTION,
+                {
+                    {CHAR_NUMBER, STATE_FRACTION},
+                    {CHAR_EXP, STATE_EXP},
+                    {CHAR_SPACE, STATE_END}
+                }
+            }, {
+                STATE_EXP,
+                {
+                    {CHAR_NUMBER, STATE_EXP_NUMBER},
+                    {CHAR_SIGN, STATE_EXP_SIGN}
+                }
+            }, {
+                STATE_EXP_SIGN, {
+                    {CHAR_NUMBER, STATE_EXP_NUMBER}
+                }
+            }, {
+                STATE_EXP_NUMBER, {
+                    {CHAR_NUMBER, STATE_EXP_NUMBER},
+                    {CHAR_SPACE, STATE_END}
+                }
+            }, {
+                STATE_END, {
+                    {CHAR_SPACE, STATE_END}
+                }
+            }
+        };
+
+        int len = s.length();
+        State st = STATE_INITIAL;
+
+        for (int i = 0; i < len; i++) {
+            CharType typ = toCharType(s[i]);
+            if (transfer[st].find(typ) == transfer[st].end()) {
+                return false;
+            } else {
+                st = transfer[st][typ];
+            }
+        }
+        return st == STATE_INTEGER || st == STATE_POINT || st == STATE_FRACTION || st == STATE_EXP_NUMBER || st == STATE_END;
+    }
+};
+
+
+```
+</details>
+
+## chap 2 栈和队列
+
+<details>
+<summary>用两个栈实现队列</summary>
+用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+
++ 示例 1：
+
+    输入：
+    ["CQueue","appendTail","deleteHead","deleteHead"]
+    [[],[3],[],[]]
+    输出：[null,null,3,-1]
++ 示例 2：
+
+    输入：
+    ["CQueue","deleteHead","appendTail","appendTail","deleteHead","deleteHead"]
+    [[],[],[5],[2],[],[]]
+    输出：[null,-1,null,null,5,2]
+
+```
+class CQueue {
+public:
+    CQueue() {
+        while(!s1.empty()) {
+            s1.pop();
+        }
+        while(!s2.empty()) {
+            s2.pop();
+        }
+    }
+    
+    void appendTail(int value) {
+        s1.push(value);
+    }
+    
+    int deleteHead() {
+        if(s2.empty()) {
+            while(!s1.empty()) {
+                s2.push(s1.top());
+                s1.pop();
+            }
+        }
+        if(s2.empty()) {
+            return -1;
+        } else {
+            int res = s2.top();
+            s2.pop();
+            return res;
+        }
+    }
+
+private:
+    stack<int> s1;
+    stack<int> s2;
+};
+
+/**
+ * Your CQueue object will be instantiated and called as such:
+ * CQueue* obj = new CQueue();
+ * obj->appendTail(value);
+ * int param_2 = obj->deleteHead();
+ */
+```
+
+</details>
+
+<details>
+<summary>包含min函数的栈</summary>
+
+**描述**
+
+ 定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的min函数，并且调用 min函数、push函数 及 pop函数 的时间复杂度都是 O(1)
+    push(value):将value压入栈中
+    pop():弹出栈顶元素
+    top():获取栈顶元素
+    min():获取栈中最小元素
+    
++ 示例:
+
+        输入:    ["PSH-1","PSH2","MIN","TOP","POP","PSH1","TOP","MIN"]
+        输出:    -1,2,1,-1
+    
++ 解析:
+        "PSH-1"表示将-1压入栈中，栈中元素为-1
+        "PSH2"表示将2压入栈中，栈中元素为2，-1
+        “MIN”表示获取此时栈中最小元素==>返回-1
+        "TOP"表示获取栈顶元素==>返回2
+        "POP"表示弹出栈顶元素，弹出2，栈中元素为-1
+        "PSH-1"表示将1压入栈中，栈中元素为1，-1
+        "TOP"表示获取栈顶元素==>返回1
+        “MIN”表示获取此时栈中最小元素==>返回-1
+    
+**题解：**
+```
+     class Solution {
+     public:
+         void push(int value) {
+             s.push(value);
+             if(!m.empty()) {
+                 m.push(value< m.top() ? value : m.top());
+             } else {
+                 m.push(value);
+             }
+         }
+         void pop() {
+             s.pop();
+             m.pop();
+         }
+         int top() {
+             return s.top();
+         }
+         int min() {
+             return m.top();
+         }
+     private:
+         stack<int> s ;
+         stack<int> m;
+     };
+```
+</details>
+
+<details>
+<summary>栈的压入、弹出序列</summary>
+
+**描述**
+
+    输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）
+    
++ 示例1
+    输入：
+    [1,2,3,4,5],[4,3,5,1,2]
+    返回值：
+    false
+    
+题解：
+```
+ class Solution {
+ public:
+     bool IsPopOrder(vector<int> pushV,vector<int> popV) {
+         if(pushV.size() == 0 ) {
+             return false;
+         }
+         vector<int> stack;
+         for(int i = 0,j=0;i < pushV.size();) {
+             stack.push_back(pushV[i++]);
+             while(j < popV.size() && stack.back() == popV[j]) {
+                 stack.pop_back();
+                 j++;
+             }
+         }
+         return stack.empty();
+     }
+ };
+ 
+```
+</details>
+
+## chap 3 链表
+
+<details>
+<summary>从尾到头打印链表</summary>
+输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
+
++ 示例 1：
+
+    输入：head = [1,3,2]
+    输出：[2,3,1]
+
+
+解法1，遍历链表，存到数组中，然后翻转数组
+```
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> reversePrint(ListNode* head) {
+        vector<int> res;
+        while(head) {
+            res.push_back(head->val);
+            head = head -> next;
+        }
+        int len = res.size();
+        for(int i = 0;i < len /2;++i) {
+            swap(res[i],res[len - 1 - i]);
+        }
+        return res;
+    }
+};
+```
+解法2，反转链表，然后遍历链表到数组中
+```
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> reversePrint(ListNode* head) {
+        vector<int> res;
+        ListNode * prev = nullptr;
+        ListNode * cur = head;
+        while(cur) {
+            ListNode * tmp = cur->next;//切记，存的是后面的节点
+            cur->next = prev;
+            prev = cur;
+            cur = tmp;
+        }
+        ListNode * now_node = prev;
+        while(now_node) {
+            res.push_back(now_node->val);
+            now_node = now_node->next;
+        }
+        return res;
+    }
+};
+```
+
+</details>
+
+<details>
+<summary>链表中倒数最后k个结点</summary>
+
+描述
+
+    输入一个长度为n的链表，设链表中的元素的值为ai，输出一个链表，该输出链表包含原链表中从倒数第k个结点至尾节点的全部节点。如果该链表长度小于k，请返回一个长度为 0 的链表。
+    
++ 示例1
+
+    输入：
+    {1,2,3,4,5},3
+    返回值：
+    {3,4,5}
+
++ 示例2
+
+    输入：
+    {2},8
+    返回值：
+    {}
+
+**思路：**
+
+    本质上来说，这个还是个模拟的过程，解法1可以先遍历一遍，看看链表的长度len，然后减去k后得到len-k， 最后再遍历到len-k得到最后的结果。解法2,可以先走k步，然后再通过另一个指针同时走，以第二个指针的结果返回，这样不需要重复走，时间复杂度是严格的O(n)
+
+解法1
+```
+     /**
+      * struct ListNode {
+              *    int val;
+              *    struct ListNode next;
+              *    ListNode(int x) : val(x), next(nullptr) {}
+      * };
+      */
+     class Solution {
+     public:
+         /*
+          * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+          *
+          * 
+          * @param pHead ListNode类 
+          * @param k int整型 
+          * @return ListNode类
+          /
+         ListNode FindKthToTail(ListNode* pHead, int k) {
+             // write code here
+             ListNode * pTmp = pHead;
+             
+            int len = 0;
+            while(pTmp) {
+                ++len;
+                pTmp = pTmp->next;
+            }
+            int count = len - k;
+            if(len < k) {
+                return NULL;
+            }
+            while(count--) {
+                pHead = pHead->next;
+            }
+            return pHead;
+         }
+     };
+    解法2：
+     /**
+      * struct ListNode {
+              *    int val;
+              *    struct ListNode next;
+              *    ListNode(int x) : val(x), next(nullptr) {}
+      * };
+      */
+     class Solution {
+     public:
+         /*
+          * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+          *
+          * 
+          * @param pHead ListNode类 
+          * @param k int整型 
+          * @return ListNode类
+          /
+         ListNode FindKthToTail(ListNode* pHead, int k) {
+             // write code here
+             ListNode * pTmp1 = pHead;
+             
+            ListNode* pTmp2 = pHead;
+            while(k && pTmp1 != NULL) {
+                --k;
+                pTmp1 = pTmp1->next;
+            }
+            if(k) {//如果k没有减为0，说明数据长度小于链表长度
+                return NULL;
+            }
+            while(pTmp1 != NULL) {
+                pTmp1 = pTmp1->next;
+                    pTmp2 = pTmp2->next;
+            }
+             return pTmp2;
+         }
+     };
+    
+``` 
+</details>
+
+<details>
+<summary>翻转链表</summary>
+
+描述
+    输入一个链表，反转链表后，输出新链表的表头。
++ 示例1
+
+    输入：
+        {1,2,3}
+        返回值：
+        {3,2,1}
+**思路：**
+用prev和cur进行标志，先对指针进行翻转，然后再移动前后的prev和cur
+
+题解
+```
+     class Solution {
+     public:
+         ListNode* ReverseList(ListNode* pHead) {
+            ListNode* cur = pHead;
+           
+            ListNode * prev = NULL;
+            ListNode * tmp;
+            while(cur) {
+                tmp = cur->next;
+                cur->next = prev;
+                prev = cur;
+                cur = tmp;
+            }
+            return prev;
+         }
+     };
+     
+```
+</details>
+
+<details>
+<summary>合并两个排序的链表</summary>
+
+**描述**
+        输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
+    
+**思路：**
+这题虽然是模拟的过程，不过是用到了归并排序的最后合并的思路，就是两两比对，然后再合并，构造一个虚拟头节点，然后在两个链表中进行比对
+    
+题解
+```
+     ListNode* Merge(ListNode* pHead1, ListNode* pHead2) {
+         ListNode * dummy_head = new ListNode(-1);//虚拟头节点
+             ListNode * head = dummy_head;
+             while(pHead1 && pHead2) {
+                 if( pHead1->val > pHead2->val) {
+                    head->next = pHead2;
+                    pHead2 = pHead2->next;
+     
+                } else {
+                    head->next = pHead1;
+                    pHead1 = pHead1->next;
+     
+                } 
+                head = head->next;
+             }
+             if(pHead1 == NULL && pHead2 != NULL) {
+                 head->next = pHead2;
+             }
+             if(pHead2 == NULL && pHead1 != NULL) {
+                 head->next = pHead1;
+             }
+     
+         return dummy_head->next;
+     }
+     
+```
+</details>
+
+<details>
+<summary>复杂链表的复制</summary>
+
+**描述**
+
+    输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针random指向一个随机节点），请对此链表进行深拷贝，并返回拷贝后的头结点。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）。 下图是一个含有5个结点的复杂链表。图中实线箭头表示next指针，虚线箭头表示random指针。为简单起见，指向null的指针没有画出。
+如图：
+            
++ 示例1
+
+    输入：
+    {1,2,3,4,5,3,5,#,2,#}
+    返回值：
+    {1,2,3,4,5,3,5,#,2,#}
+
+    输入:{1,2,3,4,5,3,5,#,2,#}
+    输出:{1,2,3,4,5,3,5,#,2,#}
+    解析:我们将链表分为两段，前半部分{1,2,3,4,5}为ListNode，后半部分{3,5,#,2,#}是随机指针域表示。
+    以上示例前半部分可以表示链表为的ListNode:1->2->3->4->5
+    后半部分，3，5，#，2，#分别的表示为
+    1的位置指向3，2的位置指向5，3的位置指向null，4的位置指向2，5的位置指向null
+    如下图:
+
+**思路：**
+            用一个hash表装映射关系
+        题解
+```
+    /*
+    struct RandomListNode {
+        int label;
+        struct RandomListNode next, *random;
+        RandomListNode(int x) :
+                label(x), next(NULL), random(NULL) {
+        }
+    };
+    */
+    class Solution {
+    public:
+        RandomListNode Clone(RandomListNode* pHead) {
+            RandomListNode* cur = pHead;
+            unordered_map mp;
+            //复制各节点，并建立 “原节点 -> 新节点” 的 Map 映射
+            while(cur) {
+                mp[cur] = new RandomListNode(cur->label);
+                cur=cur->next;
+            }
+            cur = pHead;
+            while(cur) {
+                mp[cur]->next = mp[cur->next];
+                mp[cur]->random = mp[cur->random];
+                cur = cur->next;
+            }
+            return mp[pHead];
+        }
+    };
+         
+```
+</details>
+
+<details>
+<summary>两个链表的第一个公共结点</summary>
+
+**描述**
+
+        输入两个无环的单链表，找出它们的第一个公共结点。（注意因为传入数据是链表，所以错误测试数据的提示是用其他方式显示的，保证传入数据是正确的）
++ 示例1
+
+    输入：
+        {1,2,3},{4,5},{6,7}
+    返回值：
+        {6,7}
+    说明：
+        第一个参数{1,2,3}代表是第一个链表非公共部分，第二个参数{4,5}代表是第二个链表非公共部分，最后的{6,7}表示的是2个链表的公共部分这3个参数最后在后台会组装成为2个两个无环的单链表，且是有公共节点的  
+
++ 示例2
+    输入：
+        {1},{2,3},{}
+    返回值：
+        {}
+    说明：
+        2个链表没有公共节点 ,返回null，后台打印{}
+
+**思路：**
+还是比较清晰的，先分别走完两条链表，分别计算出长度，然后减去得到差值，先让长链表走完差值的部分，接着再两个链表同时走，直到两个链表的值相等为止
+    
+题解：
+```
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        int len1=0,len2=0;
+        ListNode *tmp1=headA,*tmp2=headB;
+        while(headA==NULL || headB==NULL)
+            return NULL;
+        while(tmp1->next!=NULL) {
+            ++len1;
+            tmp1=tmp1->next;
+        }
+        while( tmp2->next!=NULL) {
+            ++len2;
+            tmp2=tmp2->next;
+        }
+        tmp1=headA,tmp2=headB;
+        int diff=len1-len2;
+        while(diff>0 && tmp1!=NULL) {
+            --diff;
+            tmp1=tmp1->next;
+        }
+        while(diff<0 && tmp2!=NULL ) {
+            ++diff;
+            tmp2=tmp2->next;
+        }
+        while(tmp1!=NULL&&tmp2!=NULL) {
+            if(tmp1==tmp2)
+                return tmp1;
+            tmp1=tmp1->next;
+            tmp2=tmp2->next;
+            
+        }
+        return NULL;
+    }
+};
+```
+</details>
+
+<details>
+<summary>链表中环的入口结点</summary>
+给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。注意，pos 仅仅是用于标识环的情况，并不会作为参数传递到函数中。
+
+说明：不允许修改给定的链表。
+
+进阶：
+
+你是否可以使用 O(1) 空间解决此题？
+
+
+```
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* slow = head;
+		ListNode * fast = head;
+		while(fast != nullptr && fast->next != nullptr) {
+		    slow = slow->next;
+			fast = fast->next->next;
+			// 快慢指针相遇，此时从head 和 相遇点，同时查找直至相遇
+			if(slow == fast) {
+			    ListNode* idx1 = fast;
+				ListNode * idx2 = head;
+				while(idx1 != idx2) {
+				    idx1 = idx1->next;
+					idx2 = idx2->next;
+				}
+				return idx2;// 返回环的入口
+			}
+		}
+		return nullptr;     
+    }
+};
+```
+</details>
+
+<details>
+<summary>删除链表中的重复节点</summary>
+    
+**描述**
+
+    在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。 例如，链表1->2->3->3->4->4->5 处理后为 1->2->5
+    
++ 示例1
+
+        输入：
+        {1,2,3,3,4,4,5}
+        返回值：
+        {1,2,5}
+
+**思路：**
+
+```
+     /*
+     struct ListNode {
+         int val;
+         struct ListNode next;
+         ListNode(int x) :
+             val(x), next(NULL) {
+         }
+     };
+     */
+     class Solution {
+     public:
+         ListNode* deleteDuplication(ListNode pHead) {
+             ListNode* dummy_head = new ListNode(-1);
+             dummy_head->next = pHead;
+             ListNode * prev = dummy_head;
+             ListNode * cur = pHead;
+             while(cur && cur->next) {
+                 if(cur->val == cur->next->val) {
+                     int v = cur->val;
+                     while(cur && cur->val == v) {
+                         cur = cur->next;
+                     }
+                     prev->next = cur;
+                 } else {
+                     prev = cur;
+                     cur = cur->next;
+                 }
+             }
+             return dummy_head->next;
+         }
+     };
+     
+```
 </details>
