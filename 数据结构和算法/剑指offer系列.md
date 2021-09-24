@@ -1992,6 +1992,99 @@ Output: [3,9,20,null,null,15,7]
     Input: preorder = [-1], inorder = [-1] 
     Output: [-1]
 
+
+**题解**
+其实本题的思路显然也有递归和迭代两种解法。
+首先是递归解法，我们需要根据前序遍历的结果中第一个元素获得根节点，然后再去中序遍历中找到对应的区间进行切分，分别得到左子树和右子树的中序遍历，然后再根据中旬遍历的切分重新回到原来的前序遍历中，切分得到左子树的前序遍历和右子树的前序遍历。在切分的时候一定要注意好左右区间， 我这里采用了左闭右开的方式。
+
+优化1:可以将每次去中序遍历查索引下表的数据放到哈希表中加速查询
+
+递归解法：
+
+```
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* TraversalbuildSubtree(vector<int>& preorder, vector<int>& inorder) {
+        if(preorder.size() == 0 ) {
+            return nullptr;
+        }
+        int val = preorder[0];
+        TreeNode * root = new TreeNode(val); 
+        if(preorder.size() == 1) {
+            return root;
+        }
+        int i ;
+        for(i = 0;i < inorder.size();++i) {
+            if(inorder[i] == val) {
+                break;
+            }
+        }
+        //左闭右开区间：[0, i)
+        vector<int> left_inorder(inorder.begin(),inorder.begin() + i);
+        vector<int> right_inorder(inorder.begin() + 1 + i,inorder.end());
+        
+        //左闭右开状态：[）
+        vector<int> left_preorder(preorder.begin() + 1, preorder.begin() + left_inorder.size() + 1);
+        vector<int> right_preorder(preorder.begin() + left_inorder.size() + 1, preorder.end());
+
+        root->left =  TraversalbuildSubtree(left_preorder,left_inorder);
+        root->right = TraversalbuildSubtree(right_preorder,right_inorder);
+        return root;
+    }
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if(preorder.size() == 0 || inorder.size() == 0) {
+            return nullptr;
+        }
+        return TraversalbuildSubtree(preorder,inorder);
+    }
+};
+```
+
+迭代写法：
+
+```
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (!preorder.size()) {
+            return nullptr;
+        }
+        TreeNode* root = new TreeNode(preorder[0]);
+        stack<TreeNode*> stk;
+        stk.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.size(); ++i) {
+            int preorderVal = preorder[i];
+            TreeNode* node = stk.top();
+            if (node->val != inorder[inorderIndex]) {
+                node->left = new TreeNode(preorderVal);
+                stk.push(node->left);
+            }
+            else {
+                while (!stk.empty() && stk.top()->val == inorder[inorderIndex]) {
+                    node = stk.top();
+                    stk.pop();
+                    ++inorderIndex;
+                }
+                node->right = new TreeNode(preorderVal);
+                stk.push(node->right);
+            }
+        }
+        return root;
+    }
+};
+
+```
 </details>
 
 <details>
