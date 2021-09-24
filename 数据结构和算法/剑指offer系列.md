@@ -1,7 +1,7 @@
 
 # 剑指offer
 
-这里将剑指offer单独拿出来是因为考核的频率不一样，目前大厂的考核里，这部分出现的频率很高
+这里将剑指offer单独拿出来是因为考核的频率不一样，目前大厂的考核里，这部分题目以及相应的变形题出现的频率很高
 
 ## chap 1 . 数组和字符串
 
@@ -1977,7 +1977,21 @@ public:
 ## chap 4 二叉树
 
 <details>
-<summary></summary>
+<summary>重建二叉树</summary>
+输入某二叉树的前序遍历和中序遍历的结果，请构建该二叉树并返回其根节点。
+假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+
++ 示例 1:
+
+![tree.jpeg](https://i.loli.net/2021/09/24/qNXi2FELp61gksr.jpg)
+
++ Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+
++ 示例 2:
+    Input: preorder = [-1], inorder = [-1] 
+    Output: [-1]
+
 </details>
 
 <details>
