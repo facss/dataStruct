@@ -2194,5 +2194,139 @@ B是A的子结构， 即 A中有出现和B相同的结构和节点值。
 </details>
 
 # chap 5 动态规划
+<details>
+<summary>最长不含重复字符的子字符串</summary>
+示例 1:
+
+输入: "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+示例 2:
+
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+
+**思路**
+首先要理清题目意思，子串是连续的，例如pwwkew中，pww是子串，但是pwk不是连续的，因而只能是子序列，不能算是子串。
+
+```
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int maxsub = 0, left = 0, pos = 0;
+        vector<bool> used(256, false);
+        while(pos < s.size()){
+            while(used[s[pos]]) used[s[left++]] = false;  
+            maxsub = max(maxsub, pos - left + 1);
+            used[s[pos++]] = true;
+        }
+        return maxsub;
+    }
+};
+
+
+```
+
+</details>
 
 # chap 6 其他
+<details>
+<summary>滑动窗口最大值</summary>
+给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+
+返回滑动窗口中的最大值。
+
++ 示例 1：
+
+输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
+输出：[3,3,5,5,6,7]
+解释：
+
+```
+滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+ ```
++ 示例 2：
+
+输入：nums = [1], k = 1
+输出：[1]
+
++ 示例 3：
+
+输入：nums = [1,-1], k = 1
+输出：[1,-1]
+
++ 示例 4：
+
+输入：nums = [9,11], k = 2
+输出：[11]
+
+**思路**
+参考：
+https://github.com/youngyangyang04/leetcode-master/blob/master/problems/0239.%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC.md
+
+这是单调队列的经典题目
+优先级队列和单调队列的区别在于，优先级队列其实是个堆，假如使用大顶堆，每次只能弹出最大的元素，并不能操作其他的元素，因此对于滑动窗口而言，并不能满足需求。此时我们需要一个队列，这个队列呢，放进去窗口里的元素，然后随着窗口的移动，队列也一进一出，每次移动之后，队列告诉我们里面的最大值是什么。
+
+时间复杂度是 O(n)。空间复杂度因为定义一个辅助队列，所以是O(k)。
+
+```
+class Solution {
+private:
+    class MyQueue { //单调队列（从大到小）
+    public:
+        deque<int> que; // 使用deque来实现单调队列
+        // 每次弹出的时候，比较当前要弹出的数值是否等于队列出口元素的数值，如果相等则弹出。
+        // 同时pop之前判断队列当前是否为空。
+        void pop(int value) {
+            if (!que.empty() && value == que.front()) {
+                que.pop_front();
+            }
+        }
+        // 如果push的数值大于入口元素的数值，那么就将队列后端的数值弹出，直到push的数值小于等于队列入口元素的数值为止。
+        // 这样就保持了队列里的数值是单调从大到小的了。
+        void push(int value) {
+            while (!que.empty() && value > que.back()) {
+                que.pop_back();
+            }
+            que.push_back(value);
+
+        }
+        // 查询当前队列里的最大值 直接返回队列前端也就是front就可以了。
+        int front() {
+            return que.front();
+        }
+    };
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        MyQueue que;
+        vector<int> result;
+        for (int i = 0; i < k; i++) { // 先将前k的元素放进队列
+            que.push(nums[i]);
+        }
+        result.push_back(que.front()); // result 记录前k的元素的最大值
+        for (int i = k; i < nums.size(); i++) {
+            que.pop(nums[i - k]); // 滑动窗口移除最前面元素
+            que.push(nums[i]); // 滑动窗口前加入最后面的元素
+            result.push_back(que.front()); // 记录对应的最大值
+        }
+        return result;
+    }
+};
+
+```
+
+</details>
