@@ -21,7 +21,7 @@ public:
         delete[] data_;
     }
 
-    MyString& operator= (MyString&& rhs) {
+    MyString& operator= (MyString&& rhs) {//右值引用
         std::swap(rhs);
         return * this;
     }
