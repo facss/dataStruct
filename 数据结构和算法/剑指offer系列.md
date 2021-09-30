@@ -1370,7 +1370,7 @@ public:
 
 </details>
 
-## chap 2 栈和队列
+## chap 3 栈和队列
 
 <details>
 <summary>用两个栈实现队列</summary>
@@ -1527,7 +1527,7 @@ private:
 ```
 </details>
 
-## chap 3 链表
+## chap 4 链表
 
 <details>
 <summary>从尾到头打印链表</summary>
@@ -2010,7 +2010,7 @@ public:
 ```
 </details>
 
-## chap 4 二叉树
+## chap 5 二叉树
 
 <details>
 <summary>重建二叉树</summary>
@@ -2229,7 +2229,7 @@ B是A的子结构， 即 A中有出现和B相同的结构和节点值。
 <summary></summary>
 </details>
 
-# chap 5 动态规划
+# chap 6 动态规划
 <details>
 <summary>最长不含重复字符的子字符串</summary>
 示例 1:
@@ -2272,7 +2272,7 @@ public:
 
 </details>
 
-# chap 6 其他
+# chap 7 其他
 <details>
 <summary>滑动窗口最大值</summary>
 给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
