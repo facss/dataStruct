@@ -2374,7 +2374,56 @@ double findMedian() - 返回目前所有元素的中位数。
 
 **思路**
 
+使用两个堆来管理，当两堆的数据个数相等时候，左边堆添加元素。采用的方法不是直接将数据插入左边堆，而是将数据先插入右边堆，算法调整后将堆顶的数据插入到左边堆，这样保证左边堆插入的元素始终是右边堆的最小值。同理左边数据多，往右边堆添加数据的时候，先将数据放入左边堆，选出最大值放到右边堆中。
+
 ```
+class MedianFinder {
+private:
+    // 最大堆，存储左边一半的数据，堆顶为最大值
+    priority_queue<int,vector<int>,less<int>> max_heap;
+    // 最小堆， 存储右边一半的数据，堆顶为最小值
+    priority_queue<int,vector<int>,greater<int>> min_heap;
+public:
+    /** initialize your data structure here. */
+    MedianFinder() {
+
+    }
+    // 维持堆数据平衡，并保证左边堆的最大值小于或等于右边堆的最小值
+    void addNum(int num) {
+        /*
+         * 当两堆的数据个数相等时候，左边堆添加元素。
+         * 采用的方法不是直接将数据插入左边堆，而是将数据先插入右边堆，算法调整后
+         * 将堆顶的数据插入到左边堆，这样保证左边堆插入的元素始终是右边堆的最小值。
+         * 同理左边数据多，往右边堆添加数据的时候，先将数据放入左边堆，选出最大值放到右边堆中。
+         */
+        if(max_heap.size() == min_heap.size()) {
+            min_heap.push(num);
+            int top = min_heap.top();
+            min_heap.pop();
+            max_heap.push(top);
+        } else {
+            max_heap.push(num);
+            int top = max_heap.top();
+            max_heap.pop();
+            min_heap.push(top);
+        }
+    }
+    
+    double findMedian() {
+        if (max_heap.size() == min_heap.size()) {
+            return (max_heap.top()+min_heap.top())*1.0/2;
+        } else {
+            return max_heap.top()*1.0;
+        }
+    }
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
 
 ```
 
