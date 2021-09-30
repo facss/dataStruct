@@ -1334,6 +1334,42 @@ public:
 ```
 </details>
 
+## chap 2 hash table
+
+<detials>
+<summary>第一个只出现一次的字符</summary>
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+
++ 示例 1:
+
+输入：s = "abaccdeff"
+输出：'b'
+
++ 示例 2:
+
+输入：s = "" 
+输出：' '
+
+```
+class Solution {
+public:
+    char firstUniqChar(string s) {
+        unordered_map<char,int> mp;
+        for(auto & c : s) {
+            mp[c]++;
+        }
+        for(auto & c : s) {
+            if(mp[c] == 1) {
+                return c;
+            }
+        }
+        return ' ';
+    }
+};
+```
+
+</details>
+
 ## chap 2 栈和队列
 
 <details>
@@ -2427,4 +2463,8 @@ public:
 
 ```
 
+</details>
+
+<details>
+<summary></summary>
 </details>
