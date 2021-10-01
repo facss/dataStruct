@@ -1336,7 +1336,7 @@ public:
 
 ## chap 2 hash table
 
-<detials>
+<details>
 <summary>第一个只出现一次的字符</summary>
 在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
 
@@ -2265,6 +2265,10 @@ public:
 ```
 
 题解2，利用动态规划
+
+题目中的要求可以表述为：给定一个长度为 n 的序列，每次向后数 m 个元素并删除，那么最终留下的是第几个元素？
+
+这个问题很难快速给出答案。但是同时也要看到，这个问题似乎有拆分为较小子问题的潜质：如果我们知道对于一个长度 n - 1 的序列，留下的是第几个元素，那么我们就可以由此计算出长度为 n 的序列的答案。
 
 [思路在这里，比较清晰](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/tai-jiao-bi-ye-ye-neng-dong-dong-tai-gui-zmwj/)
 
