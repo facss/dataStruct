@@ -2230,6 +2230,58 @@ B是A的子结构， 即 A中有出现和B相同的结构和节点值。
 </details>
 
 # chap 6 动态规划
+
+<details>
+<summary>孩子们的游戏（圆圈中最后剩下的数）</summary>
+0,1,···,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字（删除后从下一个数字开始计数）。求出这个圆圈里剩下的最后一个数字。
+
+例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
+
++ 示例 1：
+
+输入: n = 5, m = 3
+输出: 3
+
++ 示例 2：
+
+输入: n = 10, m = 17
+输出: 2
+
+题解1:用递归，很难理解
+```
+class Solution {
+    int f(int n, int m) {
+        if (n == 1) {
+            return 0;
+        }
+        int x = f(n - 1, m);
+        return (m + x) % n;
+    }
+public:
+    int lastRemaining(int n, int m) {
+        return f(n, m);
+    }
+};
+```
+
+题解2，利用动态规划
+
+[思路在这里，比较清晰](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/tai-jiao-bi-ye-ye-neng-dong-dong-tai-gui-zmwj/)
+
+```
+public:
+    int lastRemaining(int n, int m) {
+        int res =0;
+        for(int i = 2;i <=n;++i) {
+            res = (res + m) % i;
+        }
+        return res;
+    }
+};
+
+```
+</details>
+
 <details>
 <summary>最长不含重复字符的子字符串</summary>
 示例 1:
@@ -2266,7 +2318,6 @@ public:
         return maxsub;
     }
 };
-
 
 ```
 
@@ -2534,36 +2585,3 @@ public:
 
 </details>
 
-<details>
-<summary>孩子们的游戏（圆圈中最后剩下的数）</summary>
-0,1,···,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字（删除后从下一个数字开始计数）。求出这个圆圈里剩下的最后一个数字。
-
-例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
-
-+ 示例 1：
-
-输入: n = 5, m = 3
-输出: 3
-
-+ 示例 2：
-
-输入: n = 10, m = 17
-输出: 2
-
-```
-class Solution {
-    int f(int n, int m) {
-        if (n == 1) {
-            return 0;
-        }
-        int x = f(n - 1, m);
-        return (m + x) % n;
-    }
-public:
-    int lastRemaining(int n, int m) {
-        return f(n, m);
-    }
-};
-```
-
-</details>
