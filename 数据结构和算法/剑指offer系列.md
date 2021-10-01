@@ -2466,5 +2466,104 @@ public:
 </details>
 
 <details>
-<summary></summary>
+<summary>不用加减乘除的加法</summary>
+写一个函数，求两个整数之和，要求在函数体内不得使用 “+”、“-”、“*”、“/” 四则运算符号。
+
++ 示例:
+
+输入: a = 1, b = 1
+输出: 2
+
++ 提示：
+
+a, b 均可能是负数或 0
+结果不会溢出 32 位整数
+
+如果进位，可以使用(a&b) << 1的方式进行保存，如果是非进位，则直接用异或
+
+![image.png](https://i.loli.net/2021/10/01/CEiO3njBFW5H2TU.png)
+
+```
+class Solution {
+public:
+    int add(int a, int b) {
+        //因为不允许用+号，所以求出异或部分和进位部分依然不能用+ 号，所以只能循环到没有进位为止        
+        while(b!=0) {
+            //保存进位值，下次循环用
+            int c=(unsigned int)(a&b)<<1;//C++中负数不支持左移位，因为结果是不定的
+            //保存不进位值，下次循环用，
+            a^=b;
+            //如果还有进位，再循环，如果没有，则直接输出没有进位部分即可。
+            b=c;   
+        }
+        return a;
+    }
+};
+```
+
+</details>
+
+<details>
+<summary>求1+2+3+…+n</summary>
+求 1+2+...+n ，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+
++ 示例 1：
+
+输入: n = 3
+输出: 6
+
++ 示例 2：
+
+输入: n = 9
+输出: 45
+
+**思路**
+简单的递归就可以解决
+
+```
+class Solution {
+public:
+    int sumNums(int n) {
+        if(n == 1) {
+            return 1;
+        }
+        return n + sumNums(n-1);
+    }
+};
+```
+
+</details>
+
+<details>
+<summary>孩子们的游戏（圆圈中最后剩下的数）</summary>
+0,1,···,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字（删除后从下一个数字开始计数）。求出这个圆圈里剩下的最后一个数字。
+
+例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
+
++ 示例 1：
+
+输入: n = 5, m = 3
+输出: 3
+
++ 示例 2：
+
+输入: n = 10, m = 17
+输出: 2
+
+```
+class Solution {
+    int f(int n, int m) {
+        if (n == 1) {
+            return 0;
+        }
+        int x = f(n - 1, m);
+        return (m + x) % n;
+    }
+public:
+    int lastRemaining(int n, int m) {
+        return f(n, m);
+    }
+};
+```
+
 </details>
