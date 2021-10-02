@@ -2634,3 +2634,152 @@ public:
 ```
 
 </details>
+
+<details>
+<summary>数值的整数次方</summary>
+实现 pow(x, n) ，即计算 x 的 n 次幂函数（即，xn）。不得使用库函数，同时不需要考虑大数问题。
+
++ 示例 1：
+
+输入：x = 2.00000, n = 10
+输出：1024.00000
+
++ 示例 2：
+
+输入：x = 2.10000, n = 3
+输出：9.26100
+
++ 示例 3：
+
+输入：x = 2.00000, n = -2
+输出：0.25000
+解释：2-2 = 1/22 = 1/4 = 0.25
+
+**思路**
+利用快速幂
+```
+// 快速幂
+//                                      (1)例如: 求3^10
+//                                       3^10= (3^2)^5 = (3^2)*(3^4)^2 = (3^2)*(3^8)^1 = (3^2)*(3^8)*(3^16)^0 
+// 可以看到底数部分为                    3^2             3^4             3^8                   3^16
+// 当最右边指数为奇数时，要另外提出了           3^2                            (3^2)*(3^8)
+// 从而保证指数部分为偶数  
+// 最终结果就是 将所有提出的底数相乘           
+//        
+//                                      (2)例如: 求3^(-10)
+// 可以通过转换 使得求解过程同上         3^(-10)= (3^-1)^10
+// 底数为原来的倒数，指数为原来的相反数
+
+
+class Solution {
+public:
+    double myPow(double x, int n) {
+        long long b = n;        // int范围是[-2^31，2^31-1]，很明显不对称。当 n = -2^31 时，-n就得不到2^31，因此要用longlong来保存n
+        double res = 1.0;       // 结果为double类型，初始值为1.0（因为要用res去乘）
+
+        while (b) {                  // 指数b为0时退出循环
+            if (b < 0) {             // b<0，转换一下
+                x = 1 / x;           // 底数为原来的倒数
+                b = -b;              // 指数为原来的相反数
+            }
+            if (b & 1 == 1) {        
+                res = res * x;       // 当指数b为奇数时，会提出底数x，最终结果res就是 将所有提出的底数x相乘
+            }
+                x = x * x;           // 每一轮的底数x = x^2
+                b >>= 1;             // 每一轮指数b = b/2
+        }
+
+        return res;
+    }
+};
+```
+
+**题解2**
+```
+class Solution {
+public:
+    double myPow(double x, int n) {
+        int N = abs(n);
+        double ans=1;
+        double t=x;
+        while(N > 0) {
+            if(N%2==1)
+            ans*=t;
+            t*=t;
+            N/=2;
+        }
+        return n>=0?ans:1/ans;
+    }
+};
+
+```
+</details>
+
+# chap 排序查找
+
+<details>
+<summary>最小的k个数</summary>
+
+输入整数数组 arr ，找出其中最小的 k 个数。例如，输入4、5、1、6、2、7、3、8这8个数字，则最小的4个数字是1、2、3、4。
+
++ 示例 1：
+
+输入：arr = [3,2,1], k = 2
+输出：[1,2] 或者 [2,1]
+
++ 示例 2：
+
+输入：arr = [0,1,2,1], k = 1
+输出：[0]
+
+**题解1**
+
+利用内置的排序
+
+```
+class Solution {
+public:
+    vector<int> getLeastNumbers(vector<int>& arr, int k) {
+        sort(arr.begin(),arr.end());
+        vector<int> res;
+        for(int i = 0;i < k;++i) {
+            res.push_back(arr[i]);
+        }
+        return res;
+    }
+};
+
+```
+
+**题解2**
+利用内置的堆进行操作
+
+```
+class Solution {
+public:
+    vector<int> getLeastNumbers(vector<int>& arr, int k) {
+        vector<int> vec(k, 0);
+        if (k == 0) { // 排除 0 的情况
+            return vec;
+        }
+        priority_queue<int> que;
+        for (int i = 0; i < k; ++i) {
+            que.push(arr[i]);
+        }
+        for (int i = k; i < (int)arr.size(); ++i) {
+            if (que.top() > arr[i]) {
+                que.pop();
+                que.push(arr[i]);
+            }
+        }
+        for (int i = 0; i < k; ++i) {
+            vec[i] = que.top();
+            que.pop();
+        }
+        return vec;
+    }
+};
+
+```
+
+</details>
