@@ -2715,6 +2715,107 @@ public:
 ```
 </details>
 
+<details>
+<summary>1～n 整数中 1 出现的次数</summary>
+输入一个整数 n ，求1～n这n个整数的十进制表示中1出现的次数。
+
+例如，输入12，1～12这些整数中包含1 的数字有1、10、11和12，1一共出现了5次。
+
++ 示例 1：
+
+输入：n = 12
+输出：5
+
++ 示例 2：
+
+输入：n = 13
+输出：6
+
+题解1:
+暴力破解,显然很容易就超时
+```
+class Solution {
+public:
+    int countDigitOne(int n) {
+        int count = 0;
+        for(int i = 1;i <= n ;++i) {
+            int num = i;
+            while(num) {
+                int digit = num % 10;
+                num /=10;
+                if(digit == 1) {
+                    ++count;
+                }
+            }
+        }
+        return count;
+    }
+};
+```
+题解2:
+官方解法
+```
+class Solution {
+public:
+    int countDigitOne(int n) {
+        // mulk 表示 10^k
+        // 在下面的代码中，可以发现 k 并没有被直接使用到（都是使用 10^k）
+        // 但为了让代码看起来更加直观，这里保留了 k
+        long long mulk = 1;
+        int ans = 0;
+        for (int k = 0; n >= mulk; ++k) {
+            ans += (n / (mulk * 10)) * mulk + min(max(n % (mulk * 10) - mulk + 1, 0LL), mulk);
+            mulk *= 10;
+        }
+        return ans;
+    }
+};
+
+```
+</details>
+
+<details>
+<summary>丑数</summary>
+我们把只包含质因子 2、3 和 5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+
++ 示例:
+
+输入: n = 10
+输出: 12
+解释: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 是前 10 个丑数。
+说明:  
+
+1 是丑数。
+n 不超过1690。
+
+```
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int> factors = {2, 3, 5};
+        unordered_set<long> seen;
+        priority_queue<long, vector<long>, greater<long>> heap;
+        seen.insert(1L);
+        heap.push(1L);
+        int ugly = 0;
+        for (int i = 0; i < n; i++) {
+            long curr = heap.top();
+            heap.pop();
+            ugly = (int)curr;
+            for (int factor : factors) {
+                long next = curr * factor;
+                if (!seen.count(next)) {
+                    seen.insert(next);
+                    heap.push(next);
+                }
+            }
+        }
+        return ugly;
+    }
+};
+```
+</details>
+
 # chap 排序查找
 
 <details>
@@ -2758,25 +2859,17 @@ public:
 class Solution {
 public:
     vector<int> getLeastNumbers(vector<int>& arr, int k) {
-        vector<int> vec(k, 0);
-        if (k == 0) { // 排除 0 的情况
-            return vec;
+        priority_queue<int,vector<int>,greater<int>> min_heap;
+        vector<int> res;
+        for(int i = 0;i < asrr.size();++i) {
+            min_heap.push(arr[i]);
         }
-        priority_queue<int> que;
-        for (int i = 0; i < k; ++i) {
-            que.push(arr[i]);
+        while(k --) {
+            int tmp = min_heap.top();
+            min_heap.pop();
+            res.push_back(tmp);
         }
-        for (int i = k; i < (int)arr.size(); ++i) {
-            if (que.top() > arr[i]) {
-                que.pop();
-                que.push(arr[i]);
-            }
-        }
-        for (int i = 0; i < k; ++i) {
-            vec[i] = que.top();
-            que.pop();
-        }
-        return vec;
+        return res;
     }
 };
 
