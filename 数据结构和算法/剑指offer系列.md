@@ -2170,15 +2170,138 @@ B是A的子结构， 即 A中有出现和B相同的结构和节点值。
 </details>
 
 <details>
-<summary></summary>
+<summary>二叉树的镜像</summary>
+请完成一个函数，输入一个二叉树，该函数输出它的镜像。
+
+例如输入：
+
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+镜像输出：
+
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+
++ 示例 1：
+
+输入：root = [4,2,7,1,3,6,9]
+输出：[4,7,2,9,6,3,1]
+
+```
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* mirrorTree(TreeNode* root) {
+        //做法1，采用递归法
+        if(root == nullptr) {
+            return nullptr;
+        }
+
+        swap(root->left,root->right);
+        root->left = mirrorTree(root->left);
+        root->right = mirrorTree(root->right);
+        return root;
+    }
+};
+```
 </details>
 
 <details>
-<summary></summary>
+<summary>从上往下打印二叉树</summary>
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回：
+
+[3,9,20,15,7]
+
+```
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> levelOrder(TreeNode* root) {
+        vector<int> res;
+        if(root == NULL) {
+            return res;
+        }
+        queue<TreeNode*> que;
+        que.push(root);
+        while(!que.empty()) {
+            int sz = que.size();
+            for(int i = 0;i < sz;++i) {
+                TreeNode* cur = que.front();
+                res.push_back(cur->val);
+                que.pop();
+                if(cur->left) {
+                    que.push(cur->left);
+                }
+                if(cur->right) {
+                    que.push(cur->right);
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
 </details>
 
 <details>
-<summary></summary>
+<summary>二叉树中和为某一值的路径</summary>
+输入一棵二叉树和一个整数，打印出二叉树中节点值的和为输入整数的所有路径。从树的根节点开始往下一直到叶节点所经过的节点形成一条路径。
+
+ 
+
+示例:
+给定如下二叉树，以及目标和 target = 22，
+
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+返回:
+
+[
+   [5,4,11,2],
+   [5,8,4,5]
+]
+
+```
+
+```
 </details>
 
 <details>
@@ -2859,6 +2982,7 @@ public:
 };
 ```
 </details>
+
 # chap 排序查找
 
 <details>
