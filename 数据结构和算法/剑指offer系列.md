@@ -2190,11 +2190,91 @@ B是A的子结构， 即 A中有出现和B相同的结构和节点值。
    [5,4,11,2],
    [5,8,4,5]
 ]
+题解1，深度优先搜索:
 
 ```
+class Solution {
+public:
+    vector<vector<int>> ret;
+    vector<int> path;
+
+    void dfs(TreeNode* root, int target) {
+        if (root == nullptr) {
+            return;
+        }
+        path.emplace_back(root->val);
+        target -= root->val;
+        if (root->left == nullptr && root->right == nullptr && target == 0) {
+            ret.emplace_back(path);
+        }
+        dfs(root->left, target);
+        dfs(root->right, target);
+        path.pop_back();
+    }
+
+    vector<vector<int>> pathSum(TreeNode* root, int target) {
+        dfs(root, target);
+        return ret;
+    }
+};
 
 ```
+题解2，广度优先搜索:
+```
+class Solution {
+public:
+    vector<vector<int>> ret;
+    unordered_map<TreeNode*, TreeNode*> parent;
 
+    void getPath(TreeNode* node) {
+        vector<int> tmp;
+        while (node != nullptr) {
+            tmp.emplace_back(node->val);
+            node = parent[node];
+        }
+        reverse(tmp.begin(), tmp.end());
+        ret.emplace_back(tmp);
+    }
+
+    vector<vector<int>> pathSum(TreeNode* root, int target) {
+        if (root == nullptr) {
+            return ret;
+        }
+
+        queue<TreeNode*> que_node;
+        queue<int> que_sum;
+        que_node.emplace(root);
+        que_sum.emplace(0);
+
+        while (!que_node.empty()) {
+            TreeNode* node = que_node.front();
+            que_node.pop();
+            int rec = que_sum.front() + node->val;
+            que_sum.pop();
+
+            if (node->left == nullptr && node->right == nullptr) {
+                if (rec == target) {
+                    getPath(node);
+                }
+            } else {
+                if (node->left != nullptr) {
+                    parent[node->left] = node;
+                    que_node.emplace(node->left);
+                    que_sum.emplace(rec);
+                }
+                if (node->right != nullptr) {
+                    parent[node->right] = node;
+                    que_node.emplace(node->right);
+                    que_sum.emplace(rec);
+                }
+            }
+        }
+
+        return ret;
+    }
+};
+
+```
 </details>
 
 <details>
