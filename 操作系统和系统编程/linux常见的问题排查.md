@@ -131,7 +131,7 @@ Average:      23   14.67    0.00    7.44    0.00    0.00    0.00    0.00    0.00
 ```bash
 # 查看总体进程CPU指标，1s输出一次
 pidstat -u 1
-# 查看总体进程CPU指标，1s输出一次
+# 查看某个pid下进程CPU指标，1s输出一次
 pidstat -u 1 -p 24946
 
 12:27:22 PM   UID       PID    %usr %system  %guest    %CPU   CPU  Command
