@@ -13,6 +13,7 @@ gdb program
 + 2. 打开core文件
 ```
 gdb program core
+
 ```
 + 3. 打开执行中的进程
 ```
